@@ -1,0 +1,33 @@
+{
+  "name": "exchange-rates",
+  "version": "1.0.0",
+  "description": "test task, currency converter",
+  "main": "./bin/app.js",
+  "keywords": [
+    "converter, test"
+  ],
+  "scripts": {
+    "start": "node ./bin/app.js",
+    "test": "jest",
+    "backend": "nodemon ./bin/app.js",
+    "frontend": "npm run start --prefix frontend",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
+  },
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "config": "^3.3.7",
+    "express": "^4.17.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.16.8",
+    "@babel/core": "^7.16.7",
+    "@babel/node": "^7.16.8",
+    "@babel/preset-env": "^7.16.8",
+    "concurrently": "^7.0.0",
+    "jest": "^27.4.7",
+    "nodemon": "^2.0.15",
+    "supertest": "^6.2.1"
+  },
+  "author": "Ivan Malshchukov <nummyn0rih@gmail.com>",
+  "license": "ISC"
+}
