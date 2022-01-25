@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { exchange } from '../slices/ratesSlice.js';
 
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
@@ -11,14 +12,16 @@ import CurrencyExchangeTwoToneIcon from '@mui/icons-material/CurrencyExchangeTwo
 const options = { year: 'numeric', month: 'long', day: 'numeric' };
 const today = new Date();
 
-export default function App() {
+export default function Home() {
   const [text, setText] = useState('');
+  const {
+    currencies: { response },
+  } = useSelector((state) => state.rates);
+
+  const dispatch = useDispatch();
 
   return (
-    <Container
-      maxWidth='sm'
-      sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}
-    >
+    <>
       <Box sx={{ mt: 10, color: 'primary.contrastText', textAlign: 'center' }}>
         <Typography variant='h4' component='h1' gutterBottom>
           Курсы валют на {today.toLocaleDateString('ru-RU', options)}
@@ -28,6 +31,7 @@ export default function App() {
       <Box
         sx={{
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
           flexGrow: '1',
@@ -37,7 +41,7 @@ export default function App() {
           component='form'
           onSubmit={(e) => {
             e.preventDefault();
-            console.log(text);
+            dispatch(exchange({ text }));
             setText('');
           }}
           sx={{
@@ -65,7 +69,16 @@ export default function App() {
             <CurrencyExchangeTwoToneIcon />
           </IconButton>
         </Paper>
+        <Box sx={{ mt: 3, color: 'primary.contrastText', textAlign: 'center' }}>
+          <Typography variant='h5' component='h2' gutterBottom>
+            <p>
+              {response
+                ? response
+                : 'Введите запрос следующего вида: 15 usd in rub'}
+            </p>
+          </Typography>
+        </Box>
       </Box>
-    </Container>
+    </>
   );
 }
