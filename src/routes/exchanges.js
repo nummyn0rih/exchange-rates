@@ -12,9 +12,21 @@ import { fetchRates, changeBase } from '../slices/ratesSlice.js';
 const columns = [
   { field: 'code', headerName: 'Цифр. код', type: 'number', width: 120 },
   { field: 'currancy', headerName: 'Букв. код', width: 120 },
-  { field: 'nominal', headerName: 'Единиц', type: 'number', width: 120 },
+  {
+    field: 'nominal',
+    headerName: 'Единиц',
+    type: 'number',
+    sortable: false,
+    width: 120,
+  },
   { field: 'name', headerName: 'Валюта', width: 250 },
-  { field: 'rate', headerName: 'Курс', sortable: false, width: 120 },
+  {
+    field: 'rate',
+    headerName: 'Курс',
+    sortable: false,
+    width: 120,
+    valueGetter: (params) => `${Math.round(params.row.rate * 10000) / 10000}`,
+  },
 ];
 
 export default function Exchanges() {
@@ -23,15 +35,14 @@ export default function Exchanges() {
 
   const rows = currencies.ids.map((id) => currencies.entities[id]);
 
+  const names = [...currencies.ids];
+  const [name, setName] = useState(currencies.base.id || 'RUB');
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchRates());
   }, [dispatch]);
-
-  const names = [...currencies.ids];
-  const [name, setName] = useState(currencies.base.id);
-  console.log(currencies.base.id);
 
   const handleFetchRates = () => {
     dispatch(fetchRates());
@@ -45,38 +56,45 @@ export default function Exchanges() {
 
   return (
     <>
-      <div style={{ height: 400, width: '100%' }}>
+      <Box sx={{ pt: 3 }}>
+        <Button variant='contained' color='success' onClick={handleFetchRates}>
+          Обновить курсы валют
+        </Button>
+      </Box>
+
+      {name ? (
+        <Box sx={{ py: 3 }}>
+          <FormControl fullWidth>
+            <InputLabel id='base-label'>Сменить базовую валюту</InputLabel>
+            <Select
+              labelId='base-label'
+              id='base'
+              value={name}
+              label='Сменить базовую валюту'
+              onChange={handleChangeBase}
+            >
+              {names.map((item) => (
+                <MenuItem value={item} key={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+      ) : (
+        ''
+      )}
+      <div>
         <DataGrid
           rows={rows}
           columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
+          autoHeight
           disableSelectionOnClick
+          hideFooterPagination
+          hideFooter
+          // disableExtendRowFullWidth
         />
       </div>
-
-      <Button variant='contained' color='success' onClick={handleFetchRates}>
-        Обновить курсы валют
-      </Button>
-
-      <Box sx={{ py: 3, minWidth: 120 }}>
-        <FormControl fullWidth>
-          <InputLabel id='base-label'>Сменить базовую валюту</InputLabel>
-          <Select
-            labelId='base-label'
-            id='base'
-            value={name}
-            label='Сменить базовую валюту'
-            onChange={handleChangeBase}
-          >
-            {names.map((item) => (
-              <MenuItem value={item} key={item}>
-                {item}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
 
       <a href='https://www.cbr-xml-daily.ru/'>Курсы ЦБ РФ в XML и JSON, API</a>
     </>

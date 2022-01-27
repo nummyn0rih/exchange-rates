@@ -69,7 +69,7 @@ export default function Home() {
             <CurrencyExchangeTwoToneIcon />
           </IconButton>
         </Paper>
-        <Box sx={{ mt: 3, color: 'primary.contrastText', textAlign: 'center' }}>
+        <Box sx={{ mt: 3, textAlign: 'center' }}>
           <Typography variant='h5' component='h2' gutterBottom>
             <p>
               {response

@@ -24,15 +24,20 @@ export const ratesSlice = createSlice({
       state.currencies = { ...state.currencies, response: text };
     },
     changeBase: (state, { payload: { value } }) => {
-      if (value === state.currancy.base) {
+      if (value === state.currencies.base) {
         return;
       }
 
       const factor = state.currencies.entities[value].rate;
-      const updated = state.currencies.ids.map((id) => {
+      const prevFactor = state.currencies.entities[value].previousRate;
+      const entities = state.currencies.ids.reduce((acc, id) => {
         const currancy = { ...state.currencies.entities[id] };
-      });
-      state.currencies = { ...state.currencies, base: value };
+        const rate = currancy.rate / factor;
+        const previousRate = currancy.previousRate / prevFactor;
+        return { [id]: { ...currancy, rate, previousRate }, ...acc };
+      }, {});
+
+      state.currencies = { ...state.currencies, entities, base: value };
     },
   },
   extraReducers: (builder) => {
@@ -49,11 +54,15 @@ export const ratesSlice = createSlice({
           nominal: 1,
           rate: 1,
           previousRate: 1,
-          code: 1,
+          code: 643,
         };
+        console.log(payload);
         const ids = [...Object.keys(payload.Valute), base.id];
         const entities = ids.reduce(
           (acc, id) => {
+            if (id === base.id) {
+              return acc;
+            }
             const currency = { ...payload.Valute[id] };
             return {
               ...acc,
@@ -68,7 +77,7 @@ export const ratesSlice = createSlice({
               },
             };
           },
-          { [base.id]: base }
+          { [base.id]: { ...base } }
         );
 
         state.currencies = { base, entities, ids };

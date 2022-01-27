@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack';
 export default function App() {
   return (
     <Container
-      maxWidth='sm'
+      maxWidth='md'
       sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}
     >
       <nav>

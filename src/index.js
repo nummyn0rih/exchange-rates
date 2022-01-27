@@ -8,7 +8,7 @@ import './index.css';
 import store from './slices/index.js';
 import App from './App';
 import Home from './routes/home';
-import Exchange from './routes/exchange';
+// import Exchange from './routes/exchange';
 import Exchanges from './routes/exchanges';
 import PageNotFound from './routes/404';
 
@@ -19,7 +19,6 @@ ReactDOM.render(
         <Routes>
           <Route path='/' element={<App />}>
             <Route index element={<Home />} />
-            <Route path='exchange' element={<Exchange />} />
             <Route path='exchanges' element={<Exchanges />} />
             <Route path='*' element={<PageNotFound />} />
           </Route>
